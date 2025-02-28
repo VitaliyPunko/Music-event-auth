@@ -21,6 +21,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+
+/**
+ * <a href="https://core.telegram.org/widgets/login">Telegram login widget</a>
+ */
 @RestController
 @RequestMapping("/auth/telegram")
 @RequiredArgsConstructor
@@ -33,7 +37,7 @@ public class AuthUserController {
 
 
     /**
-     * возвращает html со скриптом для аутентификации
+     * Return html with js scrip for an authentication
      */
     @GetMapping
     public ResponseEntity<Resource> getAuthScript() {
@@ -44,32 +48,34 @@ public class AuthUserController {
     }
 
     /**
-     * сюда отправляются данные, полученные после аутентификации
+     * This method is called from by js script from front
      */
     @PostMapping( consumes = MediaType.APPLICATION_JSON_VALUE)
     public String authenticate(@RequestBody Map<String, Object> telegramData) {
-        System.out.println("XXXXXXXXXX");
-        System.out.println(telegramData);
-        if (telegramDataIsValid(telegramData)) {
-            Long userId = Long.parseLong(telegramData.get("id").toString());
-
-            // ✅ Сохраняем пользователя как авторизованного
-            authenticatedUsers.put(userId, true);
-
+        Long userId = Long.parseLong(telegramData.get("id").toString());
+        boolean userAuthenticated = isUserAuthenticated(userId);
+        if (userAuthenticated) {
             // ✅ Отправляем сообщение в Telegram
-            sendTelegramMessage(userId, "✅ Авторизация прошла успешно! Теперь введите /next для продолжения.");
+            sendTelegramMessage(userId);
 
-            return "valid"; // ✅ Фронт тоже узнает, что всё прошло успешно
+            return "valid"; // ✅ Return answer to front end widget
+        } else if (telegramDataIsValid(telegramData)) {
+            // ✅ Save user as authenticated
+            authenticatedUsers.put(userId, true);
+            // ✅ Отправляем сообщение в Telegram
+            sendTelegramMessage(userId);
+
+            return "valid"; // ✅ Return answer to front end widget
         }
         return "error";
     }
 
-    private void sendTelegramMessage(Long userId, String text) {
+    private void sendTelegramMessage(Long userId) {
         String url = "https://api.telegram.org/bot" + tgBotToken + "/sendMessage";
 
         Map<String, Object> body = Map.of(
                 "chat_id", userId,
-                "text", text
+                "text", "✅ Авторизация прошла успешно! Теперь введите /next для продолжения."
         );
 
         HttpHeaders headers = new HttpHeaders();
@@ -80,13 +86,10 @@ public class AuthUserController {
         restTemplate.postForObject(url, requestEntity, String.class);
     }
 
-    // Метод проверки авторизации (используется ботом)
-    public boolean isUserAuthenticated(Long userId) {
-        return authenticatedUsers.getOrDefault(userId, false);
-    }
 
     /**
-     * проверяет данные, полученные из телеграм
+     * <a href="https://core.telegram.org/widgets/login#checking-authorization">Checking authorization</a>
+     * check if user hash is equal to get hash from user data
      */
     private boolean telegramDataIsValid(Map<String, Object> telegramData) {
         //получаем хэш, который позже будем сравнивать с остальными данными
@@ -121,9 +124,15 @@ public class AuthUserController {
 
             // сравниваем полученный от телеграма и сгенерированный хэш
             return hash.contentEquals(validateHash);
+
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // Метод проверки авторизации (используется ботом)
+    public boolean isUserAuthenticated(Long userId) {
+        return authenticatedUsers.getOrDefault(userId, false);
     }
 
 }

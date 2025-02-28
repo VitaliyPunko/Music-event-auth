@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: music-event-auth
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/spotify_db
+    username: postgres
+    password: postgres
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+  security:
+    oauth2:
+      authorizationserver:
+        issuer: http://localhost:9000
+        endpoint:
+          authorization-uri: http://localhost:9000/oauth2/authorize
+          token-uri: http://localhost:9000/oauth2/token
+
+server:
+  port: 9000
+
+logging:
+  level:
+    org.springframework.security: TRACE
+
+telegram:
+  bot_username: MusicEvenHelperBot    #use vault
+  bot_token: 7941376949:AAHeus8Bg2E0aydGgWJEvtdOE1S3col-H1M   #use vault
+
+

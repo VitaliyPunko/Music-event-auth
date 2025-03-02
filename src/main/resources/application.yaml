@@ -30,7 +30,7 @@ application:
   auth-client:
     music-event-bot:
       client-id: music-event-bot  #use vault
-      client-secret: $2a$12$.6p1u5heZEkoIhC.jbBT8udlMXnPAneDItTCVa5/bq9ujKcpTFWKa #use vault
+      client-secret: $2a$12$.6p1u5heZEkoIhC.jbBT8udlMXnPAneDItTCVa5/bq9ujKcpTFWKa
 telegram:
   bot_username: MusicEvenHelperBot    #use vault
   bot_token: 7941376949:AAHeus8Bg2E0aydGgWJEvtdOE1S3col-H1M   #use vault

@@ -1,5 +1,6 @@
 # Music-event-auth
 
+[![Java CI with Gradle](https://github.com/VitaliyPunko/Music-event-auth/actions/workflows/gradle.yml/badge.svg)](https://github.com/VitaliyPunko/Music-event-auth/actions/workflows/gradle.yml)
 
 ### For local run:
 - download ngrok to be able to use https https://ngrok.com/docs/getting-started/

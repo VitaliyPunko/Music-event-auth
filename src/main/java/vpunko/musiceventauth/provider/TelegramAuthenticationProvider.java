@@ -12,7 +12,7 @@ import java.util.Map;
 @Component
 public class TelegramAuthenticationProvider implements AuthenticationProvider {
 
-    private final TelegramAuthValidator authValidator; // Our verification utility
+    private final TelegramAuthValidator authValidator;
 
     public TelegramAuthenticationProvider(TelegramAuthValidator authValidator) {
         this.authValidator = authValidator;
@@ -23,10 +23,6 @@ public class TelegramAuthenticationProvider implements AuthenticationProvider {
         Map<String, String> authData = (Map<String, String>) authentication.getPrincipal();
 
         if (authValidator.isValidTelegramAuth(authData)) {
-            String userId = authData.get("id");
-            String username = authData.get("username");
-
-            // ✅ Authentication successful, return authenticated user
             return new TelegramAuthenticationToken(authData);
         } else {
             throw new AuthenticationException("Invalid Telegram authentication") {};

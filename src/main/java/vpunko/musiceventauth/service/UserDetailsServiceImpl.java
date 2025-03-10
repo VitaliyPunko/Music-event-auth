@@ -31,5 +31,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new SpotifyUserDetails(optionalUser.get());
     }
 
-//    добавить автозацию юзера через auth code grant type flow
 }

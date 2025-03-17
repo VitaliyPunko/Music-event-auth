@@ -1,5 +1,7 @@
 package vpunko.musiceventauth.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Mac;
@@ -9,37 +11,48 @@ import java.security.MessageDigest;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * <a href="https://core.telegram.org/widgets/login#checking-authorization">Checking authorization</a>
+ * check if user hash is equal to get hash from user data
+ */
+@Slf4j
 @Component
 public class TelegramAuthValidator {
-    private static final String BOT_TOKEN = "YOUR_BOT_TOKEN";  // Replace with your bot token
 
-    public boolean isValidTelegramAuth(Map<String, String> authData) {
+    public static final String HMAC_SHA_256 = "HmacSHA256";
+    public static final String HASH = "hash";
+
+    private final String botToken;
+
+    public TelegramAuthValidator(@Value("${telegram.bot_token}") String botToken) {
+        this.botToken = botToken;
+    }
+
+
+    public boolean isValidTelegramAuth(Map<String, Object> authData) {
         try {
-            // Extract the received hash
-            String receivedHash = authData.get("hash");
+            String receivedHash = (String) authData.get(HASH);
 
             // Remove "hash" and sort remaining parameters alphabetically
             String dataCheckString = authData.entrySet().stream()
-                    .filter(entry -> !"hash".equals(entry.getKey()))
+                    .filter(entry -> !HASH.equals(entry.getKey()))
                     .sorted(Map.Entry.comparingByKey())
                     .map(entry -> entry.getKey() + "=" + entry.getValue())
                     .collect(Collectors.joining("\n"));
 
             // Generate the HMAC-SHA256 hash using the bot token
             byte[] secretKey = MessageDigest.getInstance("SHA-256")
-                    .digest(BOT_TOKEN.getBytes(StandardCharsets.UTF_8));
+                    .digest(botToken.getBytes(StandardCharsets.UTF_8));
 
-            Mac mac = Mac.getInstance("HmacSHA256");
-            mac.init(new SecretKeySpec(secretKey, "HmacSHA256"));
+            Mac mac = Mac.getInstance(HMAC_SHA_256);
+            mac.init(new SecretKeySpec(secretKey, HMAC_SHA_256));
             byte[] hmac = mac.doFinal(dataCheckString.getBytes(StandardCharsets.UTF_8));
 
             // Convert the HMAC result to a hexadecimal string
             String calculatedHash = bytesToHex(hmac);
-
-            // Compare the calculated hash with the received hash
-//            return calculatedHash.equals(receivedHash);
-            return true;
+            return calculatedHash.equals(receivedHash);
         } catch (Exception e) {
+            log.error("Error occurred during telegram token validation: {}", e.getMessage());
             return false;
         }
     }

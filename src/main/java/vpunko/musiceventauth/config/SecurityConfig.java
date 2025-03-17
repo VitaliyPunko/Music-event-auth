@@ -11,8 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -35,14 +33,12 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
-import vpunko.musiceventauth.provider.TelegramAuthenticationProvider;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -57,7 +53,7 @@ public class SecurityConfig {
     @Value("${application.auth-client.music-event-bot.client-secret}")
     private String clientSecret;
 
-    private final TelegramAuthenticationProvider telegramAuthenticationProvider;
+ //   private final TelegramAuthenticationProvider telegramAuthenticationProvider;
 
     @Bean
     @Order(1)
@@ -70,7 +66,7 @@ public class SecurityConfig {
                 .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .with(authorizationServerConfigurer, (authorizationServer) ->
                         authorizationServer
-                                .oidc(Customizer.withDefaults())    // Enable OpenID Connect 1.0
+                                .oidc(Customizer.withDefaults())
                 )
                 .authorizeHttpRequests((authorize) ->
 
@@ -79,8 +75,6 @@ public class SecurityConfig {
                                 .requestMatchers("/auth/token/telegram").permitAll()
                                 .anyRequest().permitAll()
                 )
-                // Redirect to the login page when not authenticated from the
-                // authorization endpoint
                 .exceptionHandling((exceptions) -> exceptions
                         .defaultAuthenticationEntryPointFor(
                                 new LoginUrlAuthenticationEntryPoint("/login"),
@@ -98,7 +92,7 @@ public class SecurityConfig {
         http
                 .csrf((csrf) -> csrf.disable())
                 .cors((cors) -> cors.disable())
-                .authenticationProvider(telegramAuthenticationProvider)
+     //           .authenticationProvider(telegramAuthenticationProvider)
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/hello").permitAll()
                         .requestMatchers("/auth/token/telegram").permitAll()
@@ -168,10 +162,10 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager() {
-        return new ProviderManager(List.of(telegramAuthenticationProvider));
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager() {
+//        return new ProviderManager(List.of(telegramAuthenticationProvider));
+//    }
 
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer() {

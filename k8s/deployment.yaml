@@ -27,14 +27,14 @@ spec:
               memory: "200Mi"
           readinessProbe:
             httpGet:
-              path: /actuator/health/readiness
+              path: /auth/actuator/health/readiness
               port: 9090
             initialDelaySeconds: 5
             periodSeconds: 3
             failureThreshold: 2
           livenessProbe:
             httpGet:
-              path: /actuator/health/liveness
+              path: /auth/actuator/health/liveness
               port: 9090
             initialDelaySeconds: 60
             periodSeconds: 10

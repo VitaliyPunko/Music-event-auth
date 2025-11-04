@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: music-event-auth
-          image: vitalpunko/music-event-auth:latest
+          image: vitaliypunko/music-event-auth:latest
           ports:
             - containerPort: 9090
           resources:
@@ -36,7 +36,7 @@ spec:
             httpGet:
               path: /actuator/health/liveness
               port: 9090
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 10
             failureThreshold: 3
 

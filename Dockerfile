@@ -1,10 +1,10 @@
-FROM openjdk:17-jdk-slim
+FROM amazoncorretto:17-alpine-jdk
 
 WORKDIR /app
 
 COPY build/libs/music-event-auth.jar app.jar
 
-EXPOSE 9000
+EXPOSE 9090
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
 

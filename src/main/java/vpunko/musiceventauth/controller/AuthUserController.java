@@ -1,6 +1,7 @@
 package vpunko.musiceventauth.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -19,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * <a href="https://core.telegram.org/widgets/login">Telegram login widget</a>
  */
+@Slf4j
 @RestController
 @RequestMapping("/telegram")
 @RequiredArgsConstructor
@@ -36,6 +38,7 @@ public class AuthUserController {
      */
     @GetMapping
     public ResponseEntity<Resource> getAuthScript() {
+        log.info("Telegram login widget requested");
         Resource resource = new ClassPathResource("static/telegram.html");
         var headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=telegram.html");
@@ -47,6 +50,7 @@ public class AuthUserController {
      */
     @PostMapping( consumes = MediaType.APPLICATION_JSON_VALUE)
     public String authenticate(@RequestBody Map<String, Object> telegramData) {
+        log.info("Telegram login widget auth request: {}", telegramData);
         Long userId = Long.parseLong(telegramData.get("id").toString());
         boolean userAuthenticated = isUserAuthenticated(userId);
         if (userAuthenticated) {

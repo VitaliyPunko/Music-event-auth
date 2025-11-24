@@ -3,11 +3,18 @@ kind: Ingress
 metadata:
   name: music-event-auth-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: letsencrypt-test
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   ingressClassName: nginx
+
+  tls:
+    - hosts:
+        - music-event-bot.duckdns.org
+      secretName: music-event-bot-tls  # Certificates are stored in music-event-bot-tls secret
+
   rules:
-    - host: 66-228-63-42.ip.linodeusercontent.com
+    - host: music-event-bot.duckdns.org
       http:
         paths:
           - path: /auth

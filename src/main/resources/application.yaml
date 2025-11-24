@@ -43,10 +43,10 @@ logging:
 application:
   auth-client:
     music-event-bot:
-      client-id: music-event-bot  #use vault
+      client-id: music-event-bot
       client-secret: $2a$12$.6p1u5heZEkoIhC.jbBT8udlMXnPAneDItTCVa5/bq9ujKcpTFWKa
 telegram:
-  bot_username: ${telegram-bot-username}
-  bot_token: ${telegram-bot-token}
+  bot_username: MusicEvenHelperBot
+  bot_token: 8223652018:AAERw1pr6gp1ny-SSCO81WMbCvGB6_lV37c
 
 

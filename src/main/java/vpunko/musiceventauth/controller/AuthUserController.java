@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <a href="https://core.telegram.org/widgets/login">Telegram login widget</a>
  */
 @RestController
-@RequestMapping("/auth/telegram")
+@RequestMapping("/telegram")
 @RequiredArgsConstructor
 public class AuthUserController {
 
@@ -32,7 +32,7 @@ public class AuthUserController {
     private final TelegramAuthValidator validator;
 
     /**
-     * Return html with js scrip for an authentication
+     * Return HTML with js scrip for an authentication
      */
     @GetMapping
     public ResponseEntity<Resource> getAuthScript() {

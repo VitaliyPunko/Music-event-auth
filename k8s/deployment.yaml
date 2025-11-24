@@ -2,10 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: music-event-auth
-#  annotations:
-#    service.beta.kubernetes.io/do-loadbalancer-name: "music-event-auth.com"
-#    service.beta.kubernetes.io/do-loadbalancer-certificate-id: "1234-5678-9012-3456"
-#    service.beta.kubernetes.io/do-loadbalancer-protocol: "https"
 spec:
   replicas: 2
   selector:

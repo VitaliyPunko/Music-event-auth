@@ -17,6 +17,18 @@ spec:
           image: vitaliypunko/music-event-auth:latest
           ports:
             - containerPort: 9090
+          env:
+            - name: TELEGRAM_BOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: telegram-bot-credentials
+                  key: bot-username
+            - name: TELEGRAM_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: telegram-bot-credentials
+                  key: bot-token
+
           resources:
             limits:
               cpu: "0.2"
